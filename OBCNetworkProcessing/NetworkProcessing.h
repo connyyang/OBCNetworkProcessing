@@ -16,7 +16,7 @@
 
 @property (nonatomic, retain) NSURLRequest * urlRequest;
 
--(void)init:(NSURLRequest *)urlRequest;
+-(NetworkProcessing *)init:(NSURLRequest *)urlRequest;
 
 -(void)downloadJSON: (void (^)(NSDictionary* dic, NSURLResponse * response, NSError * error)) completion;
 

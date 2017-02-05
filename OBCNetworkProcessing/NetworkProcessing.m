@@ -10,40 +10,48 @@
 
 @implementation NetworkProcessing
 
--(void)init:(NSURLRequest *)urlRequest
+-(NetworkProcessing *)init:(NSURLRequest *)urlRequest
 {
     self.urlRequest = urlRequest;
+    
+    return self;
 }
 
 -(void)downloadJSON: (void (^)(NSDictionary* dic, NSURLResponse * response, NSError * error)) completion
 {
-    [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    //[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     
-    [[NSURLSession sharedSession] dataTaskWithRequest:self.urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if(response == nil){
-            
-        }
-        
-        if(data == nil)
-        {
-        
-        }
-        else
-        {
-            NSHTTPURLResponse * httpResponse = response;
-            switch([httpResponse statusCode]){
-                case 200:{
-                    NSDictionary * json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
-                    completion(json,response,error);
-                    break;
+    [[[NSURLSession sharedSession] dataTaskWithRequest:self.urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
 
-                }
-                default:
-                    break;
-                    
+        NSHTTPURLResponse * httpResponse;
+
+        if(response != nil){
+            httpResponse = response;
+            
+            if(data == nil)
+            {
+                
             }
+            else
+            {
+                switch([httpResponse statusCode]){
+                    case 200:{
+                        NSDictionary * json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+                        //NSLog(@"data:%@",data);
+
+                        completion(json,response,error);
+                        break;
+                        
+                    }
+                    default:
+                        break;
+                        
+                }
+            }
+
         }
-    }];
+        
+    }]resume];
 }
 
 @end
