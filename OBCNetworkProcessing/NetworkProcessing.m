@@ -19,9 +19,14 @@
 
 -(void)downloadJSON: (void (^)(NSDictionary* dic, NSURLResponse * response, NSError * error)) completion
 {
-    //[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-    
     [[[NSURLSession sharedSession] dataTaskWithRequest:self.urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        if ([[NSThread currentThread] isMainThread]){
+            NSLog(@"In main thread--completion handler");
+        }
+        else{
+            NSLog(@"Not in main thread--completion handler");
+        }
 
         NSHTTPURLResponse * httpResponse;
 
